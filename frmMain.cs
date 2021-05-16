@@ -50,15 +50,18 @@ namespace DiagnosticsTools
                 if (row.Cells[0].Value != null)
                 {
                     var info = Process.GetProcessById((int)row.Cells["pId"].Value);
-                    txtInfo.Text = GetProInfo(info);
-                    //进程运行信息输出
-                    rtbMsg.Clear();
-                    if (!diagnosticsCache.ContainsKey(info.Id))
+                    if (info != null && !info.HasExited)
                     {
-                        Task.Run(() =>
+                        txtInfo.Text = GetProInfo(info);
+                        //进程运行信息输出
+                        rtbMsg.Clear();
+                        if (!diagnosticsCache.ContainsKey(info.Id))
                         {
-                            PrintRuntime(info.Id);
-                        });
+                            Task.Run(() =>
+                            {
+                                PrintRuntime(info.Id);
+                            });
+                        }
                     }
                 }
             }
